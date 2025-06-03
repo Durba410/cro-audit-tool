@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CRO Audit Tool</title>
+</head>
+<body>
+  <h1>CRO Audit Generator</h1>
+  <form id="form">
+    <label>Website URL:</label><br>
+    <input type="text" id="url" required><br><br>
+    <label>Description:</label><br>
+    <textarea id="description" rows="4"></textarea><br><br>
+    <button type="submit">Generate Audit</button>
+  </form>
+
+  <h2>Audit Result:</h2>
+  <pre id="result" style="white-space: pre-wrap;"></pre>
+
+  <script>
+    document.getElementById('form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const url = document.getElementById('url').value;
+      const description = document.getElementById('description').value;
+
+      const response = await fetch('/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, description })
+      });
+
+      const data = await response.json();
+      document.getElementById('result').textContent = data.audit || 'Error: ' + data.error;
+    });
+  </script>
+</body>
+</html>
