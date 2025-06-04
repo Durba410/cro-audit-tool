@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CRO Audit Tool</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+    textarea, input { width: 100%; margin: 10px 0; padding: 8px; }
+    button { padding: 10px 20px; }
+    #result { white-space: pre-wrap; margin-top: 20px; border: 1px solid #ccc; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>CRO Audit Tool (Free GPT)</h1>
+  <input type="text" id="url" placeholder="Website URL" />
+  <textarea id="description" rows="4" placeholder="Brief description of the site or tool"></textarea>
+  <button onclick="generateAudit()">Generate Audit</button>
+  <div id="result"></div>
+
+  <script>
+    async function generateAudit() {
+      const url = document.getElementById("url").value;
+      const description = document.getElementById("description").value;
+
+      document.getElementById("result").innerText = "Loading...";
+
+      try {
+        const res = await fetch("/api/audit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, description })
+        });
+        const data = await res.json();
+        if (data.result) {
+          document.getElementById("result").innerText = data.result;
+        } else {
+          document.getElementById("result").innerText = data.error || "Something went wrong";
+        }
+      } catch (err) {
+        document.getElementById("result").innerText = "Request failed";
+      }
+    }
+  </script>
+</body>
+</html>
